@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - ReGoods</title>
+    <link rel="shortcut icon" href="{{ asset('images/logo/logo.jpeg') }}" type="image/x-icon">
     @vite('resources/css/app.css') <!-- Tailwind -->
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center">
@@ -12,12 +13,10 @@
         <!-- Logo & Title -->
         <div class="text-center mb-6">
             <div class="flex justify-center mb-2">
-                <div class="bg-green-500 p-3 rounded-lg">
+                
                     <!-- Icon box sederhana -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4v10l8 4 8-4V7z" />
-                    </svg>
-                </div>
+                    <img src="{{ asset('images/logo/logo.jpeg') }}" alt="Logo ReGoods" class="h-12 w-12">
+              
             </div>
             <h1 class="text-xl font-semibold text-gray-800">ReGoods</h1>
             <p class="text-gray-500 text-sm">Masuk ke akun Anda</p>
@@ -82,11 +81,7 @@
                     <a href="" class="text-green-500 hover:underline">Daftar</a>
                 </p>
 
-                <p class="mt-2">
-                    <a href="" class="text-gray-400 hover:text-green-500">
-                        Login Admin
-                    </a>
-                </p>
+        
             </div>
 
         </div>

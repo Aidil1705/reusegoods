@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Pembeli\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/pembeli/dashboard', function () {
-    return view('pembeli.dashboard');
-})->middleware('auth')->name('pembeli.dashboard');
+Route::get('/pembeli/dashboard', [DashboardController::class, 'index'])
+    ->middleware('auth')
+    ->name('pembeli.dashboard');

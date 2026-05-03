@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="{{ asset('images/logo/logo.jpeg') }}" type="image/x-icon">
     <title>@yield('title', 'ReGoods')</title>
     @vite('resources/css/app.css')
 </head>
@@ -14,6 +15,6 @@
     <main class="p-6">
         @yield('content')
     </main>
-
+<script src="//unpkg.com/alpinejs" defer></script>
 </body>
 </html>
