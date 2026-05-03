@@ -12,11 +12,7 @@
         
         <!-- Logo -->
         <div class="flex items-center gap-2">
-            <div class="bg-green-500 p-2 rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4v10l8 4 8-4V7z" />
-                </svg>
-            </div>
+            <img src="{{ asset('images/logo/logo.jpeg') }}" alt="Logo ReGoods" class="h-12 w-12">
             <div>
                 <span class="font-semibold text-lg">ReGoods</span>
                 <div class="text-xs text-gray-500">Panel Penjual</div>
@@ -26,13 +22,13 @@
         <!-- Right -->
         <div class="flex items-center gap-4">
             <!-- Profile Dropdown -->
-            <div class="relative group">
-                <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-sm cursor-pointer">
+            <div class="relative" data-dropdown>
+                <button type="button" data-dropdown-trigger class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-sm cursor-pointer">
                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}{{ strtoupper(substr(explode(' ', Auth::user()->name)[1] ?? '', 0, 1)) }}
-                </div>
+                </button>
                 
                 <!-- Dropdown Menu -->
-                <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg hidden group-hover:block z-10">
+                <div data-dropdown-menu class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg hidden z-10">
                     <div class="p-4 border-b">
                         <p class="font-semibold text-gray-800">{{ Auth::user()->name }}</p>
                         <p class="text-sm text-gray-500">{{ Auth::user()->email }}</p>
@@ -60,6 +56,57 @@
     <main class="p-6">
         @yield('content')
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdowns = document.querySelectorAll('[data-dropdown]');
+
+            dropdowns.forEach(function (dropdown) {
+                const trigger = dropdown.querySelector('[data-dropdown-trigger]');
+                const menu = dropdown.querySelector('[data-dropdown-menu]');
+
+                if (!trigger || !menu) {
+                    return;
+                }
+
+                trigger.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    dropdowns.forEach(function (otherDropdown) {
+                        if (otherDropdown !== dropdown) {
+                            const otherMenu = otherDropdown.querySelector('[data-dropdown-menu]');
+                            if (otherMenu) {
+                                otherMenu.classList.add('hidden');
+                            }
+                        }
+                    });
+
+                    menu.classList.toggle('hidden');
+                });
+            });
+
+            document.addEventListener('click', function (event) {
+                dropdowns.forEach(function (dropdown) {
+                    const menu = dropdown.querySelector('[data-dropdown-menu]');
+                    if (menu && !dropdown.contains(event.target)) {
+                        menu.classList.add('hidden');
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    dropdowns.forEach(function (dropdown) {
+                        const menu = dropdown.querySelector('[data-dropdown-menu]');
+                        if (menu) {
+                            menu.classList.add('hidden');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>
