@@ -22,5 +22,6 @@ Route::get('/pembeli/dashboard', function () {
 })->middleware('auth')->name('pembeli.dashboard');
 
 Route::prefix('penjual')->middleware('auth')->name('penjual.')->group(function () {
+    Route::get('/dashboard', [PenjualController::class, 'dashboard'])->name('dashboard');
     Route::resource('produk', PenjualController::class);
 });

@@ -1,9 +1,66 @@
 @extends('layouts.penjual-new')
 
-@section('title', 'Kelola Produk')
+@section('title', 'Dashboard Penjual')
 
 @section('content')
 
+<!-- Dashboard Header -->
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Dashboard Penjual</h1>
+    <p class="text-gray-500 text-sm">{{ now()->format('l, d F Y') }}</p>
+</div>
+
+<!-- KPI Cards -->
+<div class="grid grid-cols-4 gap-6 mb-8">
+    <!-- Total Produk -->
+    <div class="bg-white rounded-2xl shadow hover:shadow-lg transition p-6">
+        <div class="flex items-start justify-between">
+            <div>
+                <p class="text-gray-500 text-sm font-medium">Total Produk</p>
+                <p class="text-3xl font-bold text-gray-800 mt-2">{{ $totalProducts ?? 0 }}</p>
+            </div>
+            <div class="text-3xl">📦</div>
+        </div>
+    </div>
+
+    <!-- Total Penjualan -->
+    <div class="bg-white rounded-2xl shadow hover:shadow-lg transition p-6">
+        <div class="flex items-start justify-between">
+            <div>
+                <p class="text-gray-500 text-sm font-medium">Total Penjualan</p>
+                <p class="text-3xl font-bold text-green-600 mt-2">{{ $totalSales ?? 0 }}</p>
+            </div>
+            <div class="text-3xl">💰</div>
+        </div>
+    </div>
+
+    <!-- Rating Toko -->
+    <div class="bg-white rounded-2xl shadow hover:shadow-lg transition p-6">
+        <div class="flex items-start justify-between">
+            <div>
+                <p class="text-gray-500 text-sm font-medium">Rating Toko</p>
+                <div class="flex items-center gap-1 mt-2">
+                    <p class="text-2xl font-bold text-gray-800">{{ $storeRating ?? '4.5' }}</p>
+                    <span class="text-lg">⭐</span>
+                </div>
+            </div>
+            <div class="text-3xl">🏪</div>
+        </div>
+    </div>
+
+    <!-- Pesanan Menunggu -->
+    <div class="bg-white rounded-2xl shadow hover:shadow-lg transition p-6">
+        <div class="flex items-start justify-between">
+            <div>
+                <p class="text-gray-500 text-sm font-medium">Pesanan Menunggu</p>
+                <p class="text-3xl font-bold text-orange-600 mt-2">{{ $pendingOrders ?? 0 }}</p>
+            </div>
+            <div class="text-3xl">⏳</div>
+        </div>
+    </div>
+</div>
+
+<!-- Manage Products Section -->
 <div class="bg-white rounded-2xl shadow p-6">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-lg font-bold text-gray-800">Kelola Produk Saya</h2>
@@ -16,7 +73,7 @@
         <div class="mb-4 p-3 bg-green-50 text-green-700 rounded-lg">{{ session('success') }}</div>
     @endif
 
-    @if($products->count())
+    @if(isset($products) && $products->count())
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="bg-gray-50 border-b">
@@ -57,7 +114,11 @@
             </table>
         </div>
 
-        <div class="mt-4">{{ $products->links() }}</div>
+        @if(isset($products) && method_exists($products, 'links'))
+            <div class="mt-4">
+                {{ $products->links() }}
+            </div>
+        @endif
     @else
         <div class="text-center py-12">
             <p class="text-gray-500 text-lg mb-4">Tidak ada produk</p>

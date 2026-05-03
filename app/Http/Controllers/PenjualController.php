@@ -3,19 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PenjualController extends Controller
 {
-    public function __construct()
+    public function dashboard()
     {
-        $this->middleware('auth');
+        /** @var User $user */
+        $user = Auth::user();
+        $totalProducts = $user->products()->count();
+        $totalSales = $user->products()->sum('quantity'); // Jumlah produk terjual
+        $storeRating = 4.5; // Placeholder
+        $pendingOrders = 0; // Placeholder
+        $products = $user->products()->latest()->paginate(5);
+
+        return view('penjual.dashboard', compact('totalProducts', 'totalSales', 'storeRating', 'pendingOrders', 'products'));
     }
 
     public function index()
     {
-        $products = Auth::user()->products()->latest()->paginate(10);
+        /** @var User $user */
+        $user = Auth::user();
+        $products = $user->products()->latest()->paginate(10);
         return view('penjual.index', compact('products'));
     }
 
