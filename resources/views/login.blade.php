@@ -26,44 +26,54 @@
         <!-- Card -->
         <div class="bg-white shadow-md rounded-2xl p-6">
             
-            <form method="POST" action="">
+            <form method="POST" action="{{ route('login.post') }}">
+            @csrf
 
-                @csrf
-
-                <!-- Email -->
-                <div class="mb-4">
-                    <label class="block text-sm text-gray-600 mb-1">Email</label>
-                    <input 
-                        type="email" 
-                        name="email"
-                        placeholder="anda@example.com"
-                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                        required
-                    >
-                </div>
-
-                <!-- Password -->
-                <div class="mb-4">
-                    <label class="block text-sm text-gray-600 mb-1">Kata Sandi</label>
-                    <input 
-                        type="password" 
-                        name="password"
-                        placeholder="********"
-                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                        required
-                    >
-                </div>
-
-                <!-- Button -->
-                <a href="{{ route('pembeli.dashboard') }}"><button 
-                    type="submit"
-                    class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 rounded-lg transition"
+            <!-- Email -->
+            <div class="mb-4">
+                <label class="block text-sm text-gray-600 mb-1">Email</label>
+                <input 
+                    type="email" 
+                    name="email"
+                    placeholder="anda@example.com"
+                    class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+                    required
                 >
-                    Masuk
-                </button>
+            </div>
 
-                </a>
-            </form>
+            <!-- Password -->
+            <div class="mb-4">
+                <label class="block text-sm text-gray-600 mb-1">Kata Sandi</label>
+                <input 
+                    type="password" 
+                    name="password"
+                    placeholder="********"
+                    class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+                    required
+                >
+            </div>
+
+            <!-- Remember Me -->
+            <div class="flex items-center mb-4">
+                <input 
+                    type="checkbox" 
+                    name="remember" 
+                    id="remember"
+                    class="accent-green-500 mr-2"
+                >
+                <label for="remember" class="text-sm text-gray-600">
+                    Ingat saya
+                </label>
+            </div>
+
+            <!-- Button -->
+            <button 
+                type="submit"
+                class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 rounded-lg transition"
+            >
+                Masuk
+            </button>
+        </form>
 
             <!-- Links -->
             <div class="text-center mt-4 text-sm text-gray-500">
