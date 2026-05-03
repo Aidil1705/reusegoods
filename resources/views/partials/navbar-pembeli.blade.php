@@ -2,11 +2,7 @@
     
     <!-- Logo -->
     <div class="flex items-center gap-2">
-        <div class="bg-green-500 p-2 rounded-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4v10l8 4 8-4V7z" />
-            </svg>
-        </div>
+         <img src="{{ asset('images/logo/logo.jpeg') }}" alt="Logo ReGoods" class="h-12 w-12">
         <span class="font-semibold text-lg">ReGoods</span>
     </div>
 
@@ -23,9 +19,38 @@
             <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-1 rounded-full">0</span>
         </div>
 
-        <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-sm">
-            AN
-        </div>
+        <!-- Parent -->
+<div x-data="{ open: false }" class="relative">
+
+    <!-- Avatar -->
+    <div 
+        @click="open = !open"
+        class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-sm cursor-pointer"
+    >
+        AN
+    </div>
+
+    <!-- Dropdown -->
+    <div 
+        x-show="open"
+        @click.outside="open = false"
+        x-transition
+        class="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg border"
+        style="display: none;"
+    >
+        <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">
+            Profile
+        </a>
+
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+                Logout
+            </button>
+        </form>
+    </div>
+
+</div>
     </div>
 
 </nav>
