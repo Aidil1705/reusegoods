@@ -28,12 +28,19 @@
             <form method="POST" action="{{ route('login.post') }}">
             @csrf
 
+            @if($errors->any())
+                <div class="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
             <!-- Email -->
             <div class="mb-4">
                 <label class="block text-sm text-gray-600 mb-1">Email</label>
                 <input 
                     type="email" 
                     name="email"
+                    value="{{ old('email') }}"
                     placeholder="anda@example.com"
                     class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
                     required
@@ -76,12 +83,13 @@
 
             <!-- Links -->
             <div class="text-center mt-4 text-sm text-gray-500">
-                <p>
+                <p class="mb-2">Gunakan akun:</p>
+                <p class="text-slate-700">Email: <span class="font-semibold">annisa@gmail.com</span></p>
+                <p class="text-slate-700">Password: <span class="font-semibold">123</span></p>
+                <p class="mt-4">
                     Belum punya akun? 
                     <a href="" class="text-green-500 hover:underline">Daftar</a>
                 </p>
-
-        
             </div>
 
         </div>

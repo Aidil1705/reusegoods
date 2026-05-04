@@ -29,4 +29,9 @@ class Product extends Model
     {
         return $this->hasOne(ProductImage::class)->where('is_primary', 1);
     }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

@@ -38,7 +38,17 @@ class AuthController extends Controller
                 ])->onlyInput('email');
             }
 
-            // ✅ redirect ke dashboard pembeli
+            // ✅ cek role dan redirect sesuai role
+            $user = Auth::user();
+            $userRole = \DB::table('set_roles')
+                ->join('roles', 'set_roles.role_id', '=', 'roles.id')
+                ->where('set_roles.user_id', $user->id)
+                ->first();
+
+            if ($userRole && $userRole->role_name === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
+
             return redirect()->route('pembeli.dashboard');
         }
 
