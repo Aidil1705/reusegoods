@@ -25,11 +25,11 @@ Route::get('/pembeli/dashboard', [DashboardController::class, 'index'])
 
 Route::middleware('auth')->group(function () {
     Route::prefix('chat')->name('chat.')->group(function () {
+        Route::get('/unread-count', [ChatController::class, 'getUnreadCount'])->name('unread-count');
+        Route::post('/start', [ChatController::class, 'startChat'])->name('start');
         Route::get('/', [ChatController::class, 'index'])->name('index');
         Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');
         Route::post('/{conversation}/send', [ChatController::class, 'sendMessage'])->name('send');
-        Route::post('/start', [ChatController::class, 'startChat'])->name('start');
-        Route::get('/unread-count', [ChatController::class, 'getUnreadCount'])->name('unread-count');
     });
 });
 

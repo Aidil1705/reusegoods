@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     // List all conversations
     public function index()
     {
