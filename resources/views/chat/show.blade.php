@@ -3,7 +3,7 @@
 @section('title', $conversation->seller->name . ' - Chat')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-4xl mx-auto" id="chatPage" data-conversation-id="{{ $conversation->id }}" data-current-user-id="{{ Auth::id() }}">
     <!-- Header -->
     <div class="bg-white rounded-2xl shadow-md p-4 mb-4 flex items-center justify-between">
         <div>
@@ -17,11 +17,17 @@
                 <p class="text-sm text-gray-600">Tentang: {{ $conversation->product->name }}</p>
             @endif
         </div>
-        <a href="{{ route('chat.index') }}" class="text-gray-600 hover:text-gray-800">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        </a>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('chat.index') }}" class="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M3 12l10-10v5h10v10h-10v5z"/></svg>
+            </a>
+            <a href="{{ route('pembeli.dashboard') }}" class="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            </a>
+            <button onclick="if(confirm('Tutup percakapan?')) window.history.back();" class="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
     </div>
 
     <!-- Messages Container -->
@@ -85,5 +91,55 @@
     // setInterval(() => {
     //     location.reload();
     // }, 3000);
+</script>
+<script>
+    // Polling fallback: fetch new messages periodically if Echo isn't connected
+    (function() {
+        let lastId = 0;
+        document.querySelectorAll('#messagesContainer div').forEach(el => {
+            const id = el.getAttribute('data-message-id');
+            if (id) lastId = Math.max(lastId, Number(id));
+        });
+
+        async function poll() {
+            try {
+                const res = await fetch(`{{ url('chat') }}/${window.CONVERSATION_ID}/poll?after_id=${lastId}`);
+                if (!res.ok) return;
+                const data = await res.json();
+                if (!data.messages || data.messages.length === 0) return;
+
+                const container = document.getElementById('messagesContainer');
+                for (const m of data.messages) {
+                    lastId = Math.max(lastId, m.id);
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = `mb-4 ${m.is_current_user ? 'text-right' : 'text-left'}`;
+                    wrapper.setAttribute('data-message-id', m.id);
+
+                    const bubble = document.createElement('div');
+                    bubble.className = `inline-block ${m.is_current_user ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-800'} rounded-2xl px-4 py-2 max-w-xs`;
+
+                    const p = document.createElement('p');
+                    p.className = 'text-sm';
+                    p.textContent = m.message;
+
+                    const meta = document.createElement('p');
+                    meta.className = `${m.is_current_user ? 'text-emerald-100' : 'text-gray-600'} text-xs mt-1`;
+                    meta.textContent = new Date(m.created_at).toLocaleTimeString();
+
+                    bubble.appendChild(p);
+                    bubble.appendChild(meta);
+                    wrapper.appendChild(bubble);
+                    container.appendChild(wrapper);
+                }
+                container.scrollTop = container.scrollHeight;
+            } catch (err) {
+                // ignore
+            }
+        }
+
+        // Try polling every 1.5 seconds as fallback until Echo proves connected
+        setInterval(poll, 1500);
+    })();
 </script>
 @endsection

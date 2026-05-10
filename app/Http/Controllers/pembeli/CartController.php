@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 
 class CartController extends Controller
 {
@@ -50,11 +51,34 @@ class CartController extends Controller
         $cart = $user->cart ?? Cart::create(['user_id' => $user->id]);
 
         // Check if product already in cart
+=======
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+class CartController extends Controller
+{
+    // Add product to cart
+    public function addToCart(Product $product)
+    {
+        if (!Auth::check()) {
+            return response()->json(['status' => 'error', 'message' => 'Silakan login terlebih dahulu'], 401);
+        }
+
+        $user = Auth::user();
+
+        if ($product->stock <= 0) {
+            return response()->json(['status' => 'error', 'message' => 'Produk tidak tersedia'], 400);
+        }
+
+        $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+
+>>>>>>> ba632d81e36ff1a3d09e2e21b0b8364b25ca53b8
         $cartItem = CartItem::where('cart_id', $cart->id)
             ->where('product_id', $product->id)
             ->first();
 
         if ($cartItem) {
+<<<<<<< HEAD
             // Update quantity
             $cartItem->update([
                 'quantity' => $cartItem->quantity + $request->quantity
@@ -124,5 +148,35 @@ class CartController extends Controller
         $count = $cart ? $cart->getTotalItems() : 0;
 
         return response()->json(['count' => $count]);
+=======
+            $cartItem->quantity += 1;
+            $cartItem->save();
+        } else {
+            CartItem::create([
+                'cart_id' => $cart->id,
+                'product_id' => $product->id,
+                'quantity' => 1,
+                'price' => $product->price,
+            ]);
+        }
+
+        $cart->total_price = $cart->items()->sum(DB::raw('quantity * price'));
+        $cart->save();
+
+        return response()->json(['status' => 'added', 'message' => 'Ditambahkan ke keranjang']);
+    }
+
+    // Remove item from cart
+    public function removeFromCart(CartItem $cartItem)
+    {
+        $cart = $cartItem->cart;
+
+        $cartItem->delete();
+
+        $cart->total_price = $cart->items()->sum(DB::raw('quantity * price'));
+        $cart->save();
+
+        return response()->json(['status' => 'removed', 'message' => 'Dihapus dari keranjang']);
+>>>>>>> ba632d81e36ff1a3d09e2e21b0b8364b25ca53b8
     }
 }

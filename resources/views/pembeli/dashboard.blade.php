@@ -92,6 +92,7 @@
             <a href="{{ route('pembeli.products.show', $product->id) }}" class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg inline-block text-center">
                 Lihat Detail
             </a>
+            </a>
         </div>
     </div>
 @endforeach

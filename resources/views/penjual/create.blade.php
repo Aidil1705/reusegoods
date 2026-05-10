@@ -22,8 +22,18 @@
         @csrf
         
         <div class="mb-6">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Produk</label>
-            <input type="text" name="title" value="{{ old('title') }}" placeholder="Masukkan judul produk" class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Produk</label>
+            <input type="text" name="name" value="{{ old('name') }}" placeholder="Masukkan nama produk" class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none">
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori</label>
+            <select name="category_id" class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none">
+                <option value="">Pilih kategori</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                @endforeach
+            </select>
         </div>
 
         <div class="mb-6">
@@ -37,15 +47,24 @@
                 <input type="number" step="0.01" name="price" value="{{ old('price') }}" placeholder="0" class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none">
             </div>
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Jumlah Stok</label>
-                <input type="number" name="quantity" value="{{ old('quantity', 1) }}" placeholder="1" class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Stok</label>
+                <input type="number" name="stock" value="{{ old('stock', 1) }}" placeholder="1" class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none">
             </div>
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Kondisi</label>
+            <select name="condition" class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none">
+                <option value="">Pilih kondisi</option>
+                <option value="baru" {{ old('condition') == 'baru' ? 'selected' : '' }}>Baru</option>
+                <option value="bekas" {{ old('condition') == 'bekas' ? 'selected' : '' }}>Bekas</option>
+            </select>
         </div>
 
         <div class="mb-6">
             <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar Produk</label>
             <input type="file" name="image" class="w-full border-2 border-dashed rounded-lg px-4 py-6 cursor-pointer hover:border-green-500" accept="image/*">
-            <p class="text-xs text-gray-500 mt-2">Format: JPG, PNG. Ukuran maks: 2MB</p>
+            <p class="text-xs text-gray-500 mt-2">Format: JPG, JPEG, PNG, WEBP. Ukuran maks: 2MB</p>
         </div>
 
         <div class="flex gap-3">

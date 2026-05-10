@@ -5,17 +5,14 @@ namespace App\Http\Controllers;
 use App\Events\MessageSent;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\MessageSent;
 
 class ChatController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     // List all conversations
     public function index()
     {
@@ -35,7 +32,10 @@ class ChatController extends Controller
     // Show single conversation
     public function show(Conversation $conversation)
     {
-        $this->authorize('view', $conversation);
+        abort_unless(
+            $conversation->seller_id === Auth::id() || $conversation->buyer_id === Auth::id(),
+            403
+        );
         
         $messages = $conversation->messages()->paginate(20, ['*'], 'page', 1);
         
@@ -51,7 +51,10 @@ class ChatController extends Controller
     // Send message
     public function sendMessage(Request $request, Conversation $conversation)
     {
-        $this->authorize('view', $conversation);
+        abort_unless(
+            $conversation->seller_id === Auth::id() || $conversation->buyer_id === Auth::id(),
+            403
+        );
 
         $validated = $request->validate([
             'message' => 'required|string|max:5000',
@@ -62,6 +65,11 @@ class ChatController extends Controller
             'sender_id' => Auth::id(),
             'message' => $validated['message'],
         ]);
+
+        $message = $conversation->messages()->latest('id')->first();
+        if ($message) {
+            event(new MessageSent($message));
+        }
 
         $conversation->update(['last_message_at' => now()]);
 
@@ -88,6 +96,7 @@ class ChatController extends Controller
 
         $user = Auth::user();
         $otherUser = User::findOrFail($validated['user_id']);
+        $product = !empty($validated['product_id']) ? Product::find($validated['product_id']) : null;
 
         if ($user->id === $otherUser->id) {
             return response()->json([
@@ -107,23 +116,14 @@ class ChatController extends Controller
         })->first();
 
         if (!$conversation) {
-            // Determine who is seller and who is buyer
-            $sellerRole = $user->setRoles()->first()->roles()->where('role_name', 'penjual')->exists();
-            $buyerRole = $otherUser->setRoles()->first()->roles()->where('role_name', 'pembeli')->exists();
+            $sellerId = $product?->user_id ?? $otherUser->id;
+            $buyerId = $sellerId === $user->id ? $otherUser->id : $user->id;
 
-            if ($sellerRole && $buyerRole) {
-                $conversation = Conversation::create([
-                    'seller_id' => $user->id,
-                    'buyer_id' => $otherUser->id,
-                    'product_id' => $validated['product_id'] ?? null,
-                ]);
-            } else {
-                $conversation = Conversation::create([
-                    'seller_id' => $otherUser->id,
-                    'buyer_id' => $user->id,
-                    'product_id' => $validated['product_id'] ?? null,
-                ]);
-            }
+            $conversation = Conversation::create([
+                'seller_id' => $sellerId,
+                'buyer_id' => $buyerId,
+                'product_id' => $validated['product_id'] ?? null,
+            ]);
         }
 
         if ($request->expectsJson()) {
@@ -153,5 +153,35 @@ class ChatController extends Controller
         ->sum('messages_count');
 
         return response()->json(['unread_count' => $count]);
+    }
+
+    // Polling endpoint: return messages after given id
+    public function pollMessages(Request $request, Conversation $conversation)
+    {
+        abort_unless(
+            $conversation->seller_id === Auth::id() || $conversation->buyer_id === Auth::id(),
+            403
+        );
+
+        $afterId = $request->query('after_id');
+
+        $query = $conversation->messages()->with('sender')->orderBy('id', 'asc');
+
+        if ($afterId) {
+            $query->where('id', '>', (int) $afterId);
+        }
+
+        $messages = $query->get()->map(function ($m) {
+            return [
+                'id' => $m->id,
+                'sender' => ['id' => $m->sender->id, 'name' => $m->sender->name],
+                'message' => $m->message,
+                'created_at' => $m->created_at->toDateTimeString(),
+                'is_current_user' => $m->sender_id === Auth::id(),
+                'is_read' => (bool) $m->is_read,
+            ];
+        });
+
+        return response()->json(['messages' => $messages]);
     }
 }

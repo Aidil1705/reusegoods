@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PenjualController extends Controller
 {
@@ -48,7 +51,9 @@ class PenjualController extends Controller
 
     public function create()
     {
-        return view('penjual.create');
+        $categories = Category::orderBy('name')->get();
+
+        return view('penjual.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -60,12 +65,28 @@ class PenjualController extends Controller
             'stock' => 'required|integer|min:1',
             'condition' => 'required|in:baru,bekas',
             'category_id' => 'required|integer',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
         $data['user_id'] = Auth::id() ?? 1;
 
-        Product::create($data);
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+            $data['image'] = $imagePath;
+        }
+
+        $product = Product::create($data);
+
+        // Create ProductImage record for pembeli dashboard
+        if ($imagePath) {
+            ProductImage::create([
+                'product_id' => $product->id,
+                'image_url' => $imagePath,
+                'is_primary' => 1,
+            ]);
+        }
 
         return redirect()->route('penjual.produk.index')->with('success', 'Produk berhasil dibuat.');
     }
@@ -85,7 +106,9 @@ class PenjualController extends Controller
             abort(403);
         }
 
-        return view('penjual.edit', ['product' => $produk]);
+        $categories = Category::orderBy('name')->get();
+
+        return view('penjual.edit', ['product' => $produk, 'categories' => $categories]);
     }
 
     public function update(Request $request, Product $produk)
@@ -101,9 +124,29 @@ class PenjualController extends Controller
             'stock' => 'required|integer|min:1',
             'condition' => 'required|in:baru,bekas',
             'category_id' => 'required|integer',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+
+        if ($request->hasFile('image')) {
+            // Delete old images
+            if ($produk->image) {
+                Storage::disk('public')->delete($produk->image);
+            }
+            
+            $produk->images()->delete();
+
+            $imagePath = $request->file('image')->store('products', 'public');
+            $data['image'] = $imagePath;
+
+            // Create new ProductImage record
+            ProductImage::create([
+                'product_id' => $produk->id,
+                'image_url' => $imagePath,
+                'is_primary' => 1,
+            ]);
+        }
 
         $produk->update($data);
 
@@ -115,6 +158,14 @@ class PenjualController extends Controller
         if ($produk->user_id !== (Auth::id() ?? 1)) {
             abort(403);
         }
+
+        // Delete image file from storage
+        if ($produk->image) {
+            Storage::disk('public')->delete($produk->image);
+        }
+
+        // Delete ProductImage records
+        $produk->images()->delete();
 
         $produk->delete();
 
