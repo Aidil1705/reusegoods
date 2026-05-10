@@ -5,9 +5,15 @@
 @section('content')
 <div class="max-w-6xl mx-auto">
     <!-- Header -->
-    <div class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Pesan</h1>
-        <p class="text-gray-600">Kelola percakapan Anda</p>
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Pesan</h1>
+            <p class="text-gray-600">Kelola percakapan Anda</p>
+        </div>
+        <a href="{{ route('pembeli.dashboard') }}" class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-2xl transition font-medium">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Kembali ke Beranda
+        </a>
     </div>
 
     <!-- Conversations List -->

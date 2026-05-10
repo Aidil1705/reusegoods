@@ -5,6 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\PenjualController;
 use App\Http\Controllers\Pembeli\DashboardController;
+use App\Http\Controllers\Pembeli\ProductDetailController;
+use App\Http\Controllers\Pembeli\WishlistController;
+use App\Http\Controllers\Pembeli\CartController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +26,20 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/pembeli/dashboard', [DashboardController::class, 'index'])
     ->name('pembeli.dashboard');
 
+Route::get('/pembeli/produk/{product}', [ProductDetailController::class, 'show'])
+    ->name('pembeli.product.show');
+
 Route::middleware('auth')->group(function () {
+    Route::prefix('wishlist')->name('wishlist.')->group(function () {
+        Route::post('/{product}/toggle', [WishlistController::class, 'toggle'])->name('toggle');
+        Route::get('/{product}/check', [WishlistController::class, 'isInWishlist'])->name('check');
+    });
+
+    Route::prefix('cart')->name('cart.')->group(function () {
+        Route::post('/{product}/add', [CartController::class, 'addToCart'])->name('add');
+        Route::delete('/{cartItem}/remove', [CartController::class, 'removeFromCart'])->name('remove');
+    });
+
     Route::prefix('chat')->name('chat.')->group(function () {
         Route::get('/unread-count', [ChatController::class, 'getUnreadCount'])->name('unread-count');
         Route::post('/start', [ChatController::class, 'startChat'])->name('start');

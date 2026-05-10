@@ -31,9 +31,9 @@
                 {{ ucfirst($product->condition) }}
             </span>
 
-            <button class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg">
+            <a href="{{ route('pembeli.product.show', $product) }}" class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg inline-block text-center">
                 Lihat Detail
-            </button>
+            </a>
         </div>
     </div>
 @endforeach

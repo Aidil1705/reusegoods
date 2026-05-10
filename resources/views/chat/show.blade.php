@@ -17,11 +17,17 @@
                 <p class="text-sm text-gray-600">Tentang: {{ $conversation->product->name }}</p>
             @endif
         </div>
-        <a href="{{ route('chat.index') }}" class="text-gray-600 hover:text-gray-800">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        </a>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('chat.index') }}" class="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M3 12l10-10v5h10v10h-10v5z"/></svg>
+            </a>
+            <a href="{{ route('pembeli.dashboard') }}" class="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            </a>
+            <button onclick="if(confirm('Tutup percakapan?')) window.history.back();" class="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
     </div>
 
     <!-- Messages Container -->
