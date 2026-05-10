@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ChatController::class, 'index'])->name('index');
         Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');
         Route::post('/{conversation}/send', [ChatController::class, 'sendMessage'])->name('send');
+        Route::get('/{conversation}/poll', [ChatController::class, 'pollMessages'])->name('poll');
     });
 });
 

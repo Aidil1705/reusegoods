@@ -92,4 +92,59 @@
     //     location.reload();
     // }, 3000);
 </script>
+<script>
+    // Expose conversation and current user for frontend Echo
+    window.CONVERSATION_ID = {{ $conversation->id }};
+    window.CURRENT_USER_ID = {{ Auth::id() }};
+</script>
+<script>
+    // Polling fallback: fetch new messages periodically if Echo isn't connected
+    (function() {
+        let lastId = 0;
+        document.querySelectorAll('#messagesContainer div').forEach(el => {
+            const id = el.getAttribute('data-message-id');
+            if (id) lastId = Math.max(lastId, Number(id));
+        });
+
+        async function poll() {
+            try {
+                const res = await fetch(`{{ url('chat') }}/${window.CONVERSATION_ID}/poll?after_id=${lastId}`);
+                if (!res.ok) return;
+                const data = await res.json();
+                if (!data.messages || data.messages.length === 0) return;
+
+                const container = document.getElementById('messagesContainer');
+                for (const m of data.messages) {
+                    lastId = Math.max(lastId, m.id);
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = `mb-4 ${m.is_current_user ? 'text-right' : 'text-left'}`;
+                    wrapper.setAttribute('data-message-id', m.id);
+
+                    const bubble = document.createElement('div');
+                    bubble.className = `inline-block ${m.is_current_user ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-800'} rounded-2xl px-4 py-2 max-w-xs`;
+
+                    const p = document.createElement('p');
+                    p.className = 'text-sm';
+                    p.textContent = m.message;
+
+                    const meta = document.createElement('p');
+                    meta.className = `${m.is_current_user ? 'text-emerald-100' : 'text-gray-600'} text-xs mt-1`;
+                    meta.textContent = new Date(m.created_at).toLocaleTimeString();
+
+                    bubble.appendChild(p);
+                    bubble.appendChild(meta);
+                    wrapper.appendChild(bubble);
+                    container.appendChild(wrapper);
+                }
+                container.scrollTop = container.scrollHeight;
+            } catch (err) {
+                // ignore
+            }
+        }
+
+        // Try polling every 1.5 seconds as fallback until Echo proves connected
+        setInterval(poll, 1500);
+    })();
+</script>
 @endsection

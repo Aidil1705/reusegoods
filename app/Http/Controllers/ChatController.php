@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\MessageSent;
 
 class ChatController extends Controller
 {
@@ -63,6 +64,11 @@ class ChatController extends Controller
             'sender_id' => Auth::id(),
             'message' => $validated['message'],
         ]);
+
+        $message = $conversation->messages()->latest('id')->first();
+        if ($message) {
+            event(new MessageSent($message));
+        }
 
         $conversation->update(['last_message_at' => now()]);
 
@@ -127,5 +133,32 @@ class ChatController extends Controller
         ->sum('messages_count');
 
         return response()->json(['unread_count' => $count]);
+    }
+
+    // Polling endpoint: return messages after given id
+    public function pollMessages(Request $request, Conversation $conversation)
+    {
+        $this->authorize('view', $conversation);
+
+        $afterId = $request->query('after_id');
+
+        $query = $conversation->messages()->with('sender')->orderBy('id', 'asc');
+
+        if ($afterId) {
+            $query->where('id', '>', (int) $afterId);
+        }
+
+        $messages = $query->get()->map(function ($m) {
+            return [
+                'id' => $m->id,
+                'sender' => ['id' => $m->sender->id, 'name' => $m->sender->name],
+                'message' => $m->message,
+                'created_at' => $m->created_at->toDateTimeString(),
+                'is_current_user' => $m->sender_id === auth()->id(),
+                'is_read' => (bool) $m->is_read,
+            ];
+        });
+
+        return response()->json(['messages' => $messages]);
     }
 }
