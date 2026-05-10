@@ -138,7 +138,10 @@ class ChatController extends Controller
     // Polling endpoint: return messages after given id
     public function pollMessages(Request $request, Conversation $conversation)
     {
-        $this->authorize('view', $conversation);
+        abort_unless(
+            $conversation->seller_id === Auth::id() || $conversation->buyer_id === Auth::id(),
+            403
+        );
 
         $afterId = $request->query('after_id');
 
@@ -154,7 +157,7 @@ class ChatController extends Controller
                 'sender' => ['id' => $m->sender->id, 'name' => $m->sender->name],
                 'message' => $m->message,
                 'created_at' => $m->created_at->toDateTimeString(),
-                'is_current_user' => $m->sender_id === auth()->id(),
+                'is_current_user' => $m->sender_id === Auth::id(),
                 'is_read' => (bool) $m->is_read,
             ];
         });

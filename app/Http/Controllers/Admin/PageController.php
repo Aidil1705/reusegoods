@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -91,7 +92,7 @@ class PageController extends Controller
         ]);
 
         Product::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'category_id' => $validated['category_id'],
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
@@ -114,14 +115,23 @@ class PageController extends Controller
 
     public function updateProduct(Request $request, Product $product)
     {
-        $validated = $request->validate([
+        $payload = [
+            'name' => $request->filled('name') ? $request->input('name') : $product->name,
+            'category_id' => $request->filled('category_id') ? $request->input('category_id') : $product->category_id,
+            'price' => $request->filled('price') ? $request->input('price') : $product->price,
+            'stock' => $request->filled('stock') ? $request->input('stock') : $product->stock,
+            'condition' => $request->filled('condition') ? $request->input('condition') : $product->condition,
+            'description' => $request->input('description', $product->description),
+        ];
+
+        $validated = validator($payload, [
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'condition' => 'required|in:baru,bekas',
             'description' => 'nullable|string',
-        ]);
+        ])->validate();
 
         $product->update([
             'category_id' => $validated['category_id'],

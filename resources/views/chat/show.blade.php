@@ -3,7 +3,7 @@
 @section('title', $conversation->seller->name . ' - Chat')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-4xl mx-auto" id="chatPage" data-conversation-id="{{ $conversation->id }}" data-current-user-id="{{ Auth::id() }}">
     <!-- Header -->
     <div class="bg-white rounded-2xl shadow-md p-4 mb-4 flex items-center justify-between">
         <div>
@@ -91,11 +91,6 @@
     // setInterval(() => {
     //     location.reload();
     // }, 3000);
-</script>
-<script>
-    // Expose conversation and current user for frontend Echo
-    window.CONVERSATION_ID = {{ $conversation->id }};
-    window.CURRENT_USER_ID = {{ Auth::id() }};
 </script>
 <script>
     // Polling fallback: fetch new messages periodically if Echo isn't connected
