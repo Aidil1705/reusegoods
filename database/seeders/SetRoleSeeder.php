@@ -13,9 +13,15 @@ class SetRoleSeeder extends Seeder
      */
     public function run(): void
     {
+        $adminRoleId = DB::table('roles')->where('role_name', 'admin')->value('id');
+        $buyerRoleId = DB::table('roles')->where('role_name', 'pembeli')->value('id');
+
+        $adminId = DB::table('users')->where('email', 'annisa@gmail.com')->value('id');
+        $aidilId = DB::table('users')->where('email', 'aidil@gmail.com')->value('id');
+
         DB::table('set_roles')->insert([
-            'user_id' => 1,
-            'role_id' => 2 // pembeli
+            ['user_id' => $adminId, 'role_id' => $adminRoleId],
+            ['user_id' => $aidilId, 'role_id' => $buyerRoleId],
         ]);
     }
 }
