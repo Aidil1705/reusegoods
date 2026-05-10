@@ -31,16 +31,16 @@
                 <tbody>
                     @foreach($products as $product)
                     <tr class="border-b hover:bg-gray-50">
-                        <td class="px-4 py-3 text-gray-800 font-medium">{{ $product->title }}</td>
+                        <td class="px-4 py-3 text-gray-800 font-medium">{{ $product->name }}</td>
                         <td class="px-4 py-3 text-gray-600">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
                         <td class="px-4 py-3">
-                            <span class="px-3 py-1 rounded-full text-xs font-medium {{ $product->quantity > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                                {{ $product->quantity }}
+                            <span class="px-3 py-1 rounded-full text-xs font-medium {{ $product->stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                {{ $product->stock }}
                             </span>
                         </td>
                         <td class="px-4 py-3">
                             <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                                Aktif
+                                {{ ucfirst($product->status) }}
                             </span>
                         </td>
                         <td class="px-4 py-3 flex gap-2">

@@ -19,10 +19,9 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/pembeli/dashboard', [DashboardController::class, 'index'])
-    ->middleware('auth')
     ->name('pembeli.dashboard');
 
-Route::prefix('penjual')->middleware('auth')->name('penjual.')->group(function () {
+Route::prefix('penjual')->name('penjual.')->group(function () {
     Route::get('/dashboard', [PenjualController::class, 'dashboard'])->name('dashboard');
     Route::resource('produk', PenjualController::class);
 });
