@@ -15,7 +15,7 @@
     <!-- Right -->
     <div class="flex items-center gap-4">
         <div class="relative">
-            🛒
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7 4V3c0-.55.45-1 1-1s1 .45 1 1v1h6V3c0-.55.45-1 1-1s1 .45 1 1v1h3c1.1 0 2 .9 2 2v16c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2h3zm9 18H8v-2h8v2zm3-4H4V8h16v10z"/></svg>
             <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-1 rounded-full">0</span>
         </div>
 
@@ -33,7 +33,7 @@
                 </div>
                 
                 <a href="{{ route('penjual.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
-                    <span>🏪</span>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M11 10H2v2h9v-2zm0 4H2v2h9v-2zm0-8H2v2h9V6zm7 4v-4h-4v4h4zm0 2h-4v4h4v-4zm-6 4h4v-4h-4v4zm-6 2h20V4H2v14z"/></svg>
                     Beralih ke Penjual
                 </a>
                 

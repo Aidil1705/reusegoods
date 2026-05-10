@@ -25,7 +25,7 @@ class PenjualController extends Controller
         }
         
         $totalProducts = $user->products()->count();
-        $totalSales = $user->products()->sum('quantity'); // Jumlah produk terjual
+        $totalSales = $user->products()->where('status', 'sold')->count(); // Jumlah produk terjual
         $storeRating = 4.5; // Placeholder
         $pendingOrders = 0; // Placeholder
         $products = $user->products()->latest()->paginate(5);

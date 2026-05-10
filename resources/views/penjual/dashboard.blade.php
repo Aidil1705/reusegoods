@@ -19,7 +19,7 @@
                 <p class="text-gray-500 text-sm font-medium">Total Produk</p>
                 <p class="text-3xl font-bold text-gray-800 mt-2">{{ $totalProducts ?? 0 }}</p>
             </div>
-            <div class="text-3xl">📦</div>
+            <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M7 2h10v2H7V2m11 4v10h2V6h-2m-2-4H8v2h8V2M4 6h14v12H4V6m2 2v8h10V8H6z"/></svg>
         </div>
     </div>
 
@@ -30,7 +30,7 @@
                 <p class="text-gray-500 text-sm font-medium">Total Penjualan</p>
                 <p class="text-3xl font-bold text-green-600 mt-2">{{ $totalSales ?? 0 }}</p>
             </div>
-            <div class="text-3xl">💰</div>
+            <svg class="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 15h-2v-2h2v2m0-4h-2V7h2v6z"/></svg>
         </div>
     </div>
 
@@ -41,10 +41,10 @@
                 <p class="text-gray-500 text-sm font-medium">Rating Toko</p>
                 <div class="flex items-center gap-1 mt-2">
                     <p class="text-2xl font-bold text-gray-800">{{ $storeRating ?? '4.5' }}</p>
-                    <span class="text-lg">⭐</span>
+                    <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2l-2.81 6.63L2 9.24l5.46 4.73L5.82 21z"/></svg>
                 </div>
             </div>
-            <div class="text-3xl">🏪</div>
+            <svg class="w-8 h-8 text-purple-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5m-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11m3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5"/></svg>
         </div>
     </div>
 
@@ -55,7 +55,7 @@
                 <p class="text-gray-500 text-sm font-medium">Pesanan Menunggu</p>
                 <p class="text-3xl font-bold text-orange-600 mt-2">{{ $pendingOrders ?? 0 }}</p>
             </div>
-            <div class="text-3xl">⏳</div>
+            <svg class="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-1.1 0-2 .9-2 2h2V5z"/></svg>
         </div>
     </div>
 </div>
