@@ -14,12 +14,6 @@
             <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-1 rounded-full">0</span>
         </a>
 
-        <!-- Chat -->
-        <a href="{{ route('chat.index') }}" class="relative hover:opacity-75 transition">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-            <span class="absolute -top-2 -right-2 bg-emerald-500 text-white text-xs px-1 rounded-full hidden" id="unreadBadge">0</span>
-        </a>
-
         <!-- Profile Dropdown -->
         <div class="relative" data-dropdown>
             <button type="button" data-dropdown-trigger class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-sm cursor-pointer">
@@ -101,33 +95,4 @@
         });
     });
 
-    // Load unread chat count
-    async function updateUnreadCount() {
-        @auth
-        try {
-            const response = await fetch('{{ route("chat.unread-count") }}');
-            if (!response.ok) {
-                console.warn('Failed to fetch unread count:', response.status);
-                return;
-            }
-            const data = await response.json();
-            const badge = document.getElementById('unreadBadge');
-            
-            if (data.unread_count > 0) {
-                badge.textContent = data.unread_count;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        } catch (error) {
-            console.error('Error fetching unread count:', error);
-        }
-        @endauth
-    }
-    
-    // Update on page load
-    updateUnreadCount();
-    
-    // Update every 10 seconds
-    setInterval(updateUnreadCount, 10000);
 </script>

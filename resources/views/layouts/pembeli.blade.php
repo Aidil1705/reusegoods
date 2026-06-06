@@ -6,6 +6,7 @@
     <title>@yield('title', 'ReGoods')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite('resources/css/app.css')
+    @livewireStyles
 </head>
 <body class="bg-gray-100">
 
@@ -21,5 +22,6 @@
     
     @vite('resources/js/app.js')
     <script src="//unpkg.com/alpinejs" defer></script>
+    @livewireScripts
 </body>
 </html>

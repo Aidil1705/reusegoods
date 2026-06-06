@@ -3,12 +3,13 @@
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ChatController;
 use App\Http\Controllers\PenjualController;
 use App\Http\Controllers\Pembeli\DashboardController;
 use App\Http\Controllers\Pembeli\ProductController;
 use App\Http\Controllers\Pembeli\SellerController;
 use App\Http\Controllers\Pembeli\CartController;
+use App\Http\Controllers\Pembeli\CheckoutController;
+use App\Http\Controllers\Pembeli\ShippingController;
 use App\Http\Controllers\Pembeli\ProfileController;
 use App\Http\Controllers\SellerApplicationController;
 use Illuminate\Support\Facades\Auth;
@@ -48,14 +49,21 @@ Route::middleware(['auth', 'role:pembeli'])->group(function () {
         Route::get('/count', [CartController::class, 'getCount'])->name('count');
     });
 
-    Route::prefix('chat')->name('chat.')->group(function () {
-        Route::get('/unread-count', [ChatController::class, 'getUnreadCount'])->name('unread-count');
-        Route::post('/start', [ChatController::class, 'startChat'])->name('start');
-        Route::get('/', [ChatController::class, 'index'])->name('index');
-        Route::post('/start', [ChatController::class, 'startChat'])->name('start');
-        Route::get('/unread-count', [ChatController::class, 'getUnreadCount'])->name('unread-count');
-        Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');
-        Route::post('/{conversation}/send', [ChatController::class, 'sendMessage'])->name('send');
+    Route::prefix('pembeli/checkout')->name('pembeli.checkout.')->group(function () {
+        Route::get('/', [CheckoutController::class, 'index'])->name('index');
+        Route::post('/', [CheckoutController::class, 'store'])->name('store');
+        Route::get('/{order}/confirmation', [CheckoutController::class, 'confirmation'])->name('confirmation');
+        Route::post('/{product}/buy-now', [CheckoutController::class, 'buyNow'])->name('buy-now');
+    });
+
+    Route::prefix('api/shipping')->name('shipping.')->group(function () {
+        Route::get('/provinces', [ShippingController::class, 'getProvinces'])->name('provinces');
+        Route::get('/cities/{provinceId}', [ShippingController::class, 'getCities'])->name('cities');
+        Route::get('/districts/{cityId}', [ShippingController::class, 'getDistricts'])->name('districts');
+        Route::get('/subdistricts/{districtId}', [ShippingController::class, 'getSubdistricts'])->name('subdistricts');
+        Route::post('/calculate', [ShippingController::class, 'calculateShipping'])->name('calculate');
+        Route::post('/search-destination', [ShippingController::class, 'searchDestination'])->name('search-destination');
+        Route::post('/update-destination', [ShippingController::class, 'updateDestination'])->name('update-destination');
     });
 
     Route::prefix('pembeli/profile')->name('pembeli.profile.')->group(function () {

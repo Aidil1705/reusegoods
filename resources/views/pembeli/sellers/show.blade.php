@@ -24,7 +24,7 @@
         </div>
 
         <!-- Seller Stats -->
-        <div class="grid grid-cols-4 gap-4">
+        <div class="grid grid-cols-3 gap-4">
             <div class="bg-gray-50 p-4 rounded-lg">
                 <p class="text-gray-600 text-sm">Rating Toko</p>
                 <p class="text-2xl font-bold text-yellow-500 mt-1">4.5 ⭐</p>
@@ -37,16 +37,7 @@
                 <p class="text-gray-600 text-sm">Penjualan</p>
                 <p class="text-2xl font-bold text-blue-600 mt-1">156 terjual</p>
             </div>
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <p class="text-gray-600 text-sm">Respon Chat</p>
-                <p class="text-2xl font-bold text-green-600 mt-1">Cepat</p>
-            </div>
         </div>
-
-        <!-- Contact Button -->
-        <button class="mt-6 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition">
-            Hubungi Penjual
-        </button>
     </div>
 
     <!-- Products Section -->

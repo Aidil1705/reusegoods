@@ -81,19 +81,8 @@
                     </div>
                 </div>
 
-                    @if(Auth::check() && Auth::id() !== $product->user_id)
-                        <form id="chatForm{{ $product->user->id }}" action="{{ route('chat.start') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="user_id" value="{{ $product->user->id }}">
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-                                Chat dengan Penjual
-                            </button>
-                        </form>
-                    @else
+                    @if(Auth::check() && Auth::id() === $product->user_id)
                         <div class="w-full bg-gray-100 text-gray-500 font-semibold py-3 rounded-xl flex items-center justify-center gap-2">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
                             Ini produk Anda
                         </div>
                     @endif

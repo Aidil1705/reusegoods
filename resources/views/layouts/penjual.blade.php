@@ -6,7 +6,7 @@
     @vite('resources/css/app.css')
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body style="background-image: url('{{ asset('images/bg/bg.jpeg') }}'); background-repeat: repeat; background-attachment: fixed;" class="bg-gray-50 min-h-screen">
 
     <div class="flex">
         <!-- Sidebar -->

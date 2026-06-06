@@ -5,7 +5,7 @@
     <title>@yield('title', 'ReGoods Penjual')</title>
     @vite('resources/css/app.css')
 </head>
-<body class="bg-gray-100">
+<body style="background-image: url('{{ asset('images/bg/bg.jpeg') }}'); background-repeat: repeat; background-attachment: fixed;" class="bg-gray-100">
 
     <!-- Navbar -->
     <nav class="bg-white shadow-sm px-6 py-3 flex items-center justify-between">

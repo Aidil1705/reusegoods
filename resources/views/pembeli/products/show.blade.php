@@ -220,9 +220,13 @@
                             </div>
                         </div>
 
-                        <button onclick="document.getElementById('buyForm').submit()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition mb-3">
-                            Beli Sekarang
-                        </button>
+                        <form method="GET" action="{{ route('pembeli.checkout.index') }}" class="w-full">
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="quantity" x-model.number="quantity">
+                            <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition mb-3">
+                                Beli Sekarang
+                            </button>
+                        </form>
 
                         <form action="{{ route('pembeli.cart.add') }}" method="POST" class="w-full">
                             @csrf
@@ -233,108 +237,35 @@
                             </button>
                         </form>
                     </div>
-
-                    <form id="buyForm" action="" method="POST" style="display:none;">
-                        @csrf
-                    </form>
                 @else
                     <button disabled class="w-full bg-gray-300 text-gray-600 font-bold py-3 rounded-lg cursor-not-allowed">
                         Stok Habis
                     </button>
                 @endif
             </div>
-
-            <!-- Seller Stats & Chat Container -->
-            <div x-data="chatComponent()">
-                <div class="bg-white rounded-2xl shadow p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Info Penjual</h3>
-                    <div class="space-y-4 mb-4 pb-4 border-b border-gray-200">
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Rating Toko</span>
-                            <span class="font-bold text-gray-800">4.5 ⭐</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Produk Aktif</span>
-                            <span class="font-bold text-gray-800">28</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Penjualan</span>
-                            <span class="font-bold text-gray-800">156 terjual</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Respon Chat</span>
-                            <span class="font-bold text-green-600">Cepat</span>
-                        </div>
+            <!-- Seller Stats -->
+            <div class="bg-white rounded-2xl shadow p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">Info Penjual</h3>
+                <div class="space-y-4 mb-4 pb-4 border-b border-gray-200">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Rating Toko</span>
+                        <span class="font-bold text-gray-800">4.5</span>
                     </div>
-                    <a href="{{ route('pembeli.sellers.show', $product->user->id) }}" class="w-full border-2 border-blue-500 text-blue-500 hover:bg-blue-50 font-bold py-2 rounded-lg transition block text-center mb-2">
-                        👤 Lihat Toko Penjual
-                    </a>
-                    <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-lg transition"
-                        @click="openChat = true; initChat()">
-                        💬 Hubungi Penjual
-                    </button>
-                </div>
-
-                <!-- Real-time Chat Modal -->
-                <div x-show="openChat" 
-                     x-transition
-                     class="fixed inset-0 bg-black bg-opacity-50 flex items-end md:items-center justify-center md:justify-center p-4 z-50"
-                     @click.self="openChat = false">
-                
-                <div class="bg-white rounded-2xl shadow-2xl w-full md:w-96 max-h-screen md:max-h-96 flex flex-col"
-                     @click.stop>
-                    
-                    <!-- Chat Header -->
-                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                <span class="font-bold">{{ substr($product->user->name, 0, 1) }}</span>
-                            </div>
-                            <div>
-                                <p class="font-semibold">{{ $product->user->name }}</p>
-                                <p class="text-xs text-blue-100">Online</p>
-                            </div>
-                        </div>
-                        <button @click="openChat = false" class="text-white hover:bg-white/20 p-2 rounded-lg">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Produk Aktif</span>
+                        <span class="font-bold text-gray-800">28</span>
                     </div>
-
-                    <!-- Chat Messages -->
-                    <div class="flex-1 overflow-y-auto p-4 bg-gray-50" id="chatMessages">
-                        <div class="text-center text-gray-500 text-sm py-8">
-                            Mulai percakapan dengan penjual
-                        </div>
-                    </div>
-
-                    <!-- Chat Input -->
-                    <div class="border-t border-gray-200 p-4 bg-white rounded-b-2xl">
-                        <div class="flex gap-2">
-                            <input 
-                                type="text"
-                                x-model="newMessage"
-                                @keyup.enter="sendChatMessage()"
-                                placeholder="Ketik pesan..."
-                                class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
-                            >
-                            <button 
-                                @click="sendChatMessage()"
-                                :disabled="!newMessage.trim()"
-                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition"
-                            >
-                                <span x-show="!isLoading">Kirim</span>
-                                <span x-show="isLoading">Mengirim...</span>
-                            </button>
-                        </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Penjualan</span>
+                        <span class="font-bold text-gray-800">156 terjual</span>
                     </div>
                 </div>
-            </div>
+                <a href="{{ route('pembeli.sellers.show', $product->user->id) }}" class="w-full border-2 border-blue-500 text-blue-500 hover:bg-blue-50 font-bold py-2 rounded-lg transition block text-center">
+                    Lihat Toko Penjual
+                </a>
             </div>
     </div>
 </div>
-
     <!-- Reviews Section -->
     <div class="mt-12 bg-white rounded-2xl shadow p-8 w-full">
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Ulasan Pembeli</h2>
@@ -424,164 +355,6 @@
             }
         }
     }
-
-    function chatComponent() {
-        return {
-            openChat: false,
-            messages: [],
-            newMessage: '',
-            isLoading: false,
-            conversationId: null,
-            channel: null,
-            
-            async initChat() {
-                // Start or get conversation
-                try {
-                    const response = await fetch('{{ route("chat.start") }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        },
-                        body: JSON.stringify({
-                            user_id: {{ $product->user->id }},
-                            product_id: {{ $product->id }},
-                        })
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        this.conversationId = data.conversation_id;
-                        console.log('Chat opened with conversation ID:', this.conversationId);
-                        this.loadMessages();
-                        this.subscribeToChannel();
-                    } else {
-                        console.error('Error starting chat:', response.status);
-                    }
-                } catch (error) {
-                    console.error('Error starting chat:', error);
-                }
-            },
-
-            loadMessages() {
-                // Fetch existing messages
-                if (!this.conversationId) return;
-                
-                fetch(`/chat/${this.conversationId}`)
-                    .then(res => res.text())
-                    .then(html => {
-                        // Extract messages from the response
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
-                        const messageElements = doc.querySelectorAll('[data-message-id]');
-                        
-                        this.messages = Array.from(messageElements).map(el => ({
-                            id: el.dataset.messageId,
-                            message: el.dataset.message,
-                            sender_name: el.dataset.senderName,
-                            sender_id: el.dataset.senderId,
-                            created_at: el.dataset.createdAt,
-                        }));
-                        
-                        this.displayMessages();
-                    })
-                    .catch(error => console.error('Error loading messages:', error));
-            },
-
-            subscribeToChannel() {
-                // Subscribe to Reverb channel for real-time updates
-                if (window.Echo && this.conversationId) {
-                    this.channel = window.Echo.private(`chat.${this.conversationId}`)
-                        .listen('message.sent', (data) => {
-                            this.messages.push({
-                                id: data.id,
-                                message: data.message,
-                                sender_name: data.sender_name,
-                                sender_id: data.sender_id,
-                                created_at: data.created_at,
-                            });
-                            this.displayMessages();
-                        });
-                }
-            },
-
-            async sendChatMessage() {
-                if (!this.newMessage.trim() || !this.conversationId) return;
-
-                this.isLoading = true;
-                const message = this.newMessage;
-                this.newMessage = '';
-
-                try {
-                    const response = await fetch(
-                        `/chat/${this.conversationId}/send`,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            },
-                            body: JSON.stringify({ message })
-                        }
-                    );
-
-                    if (!response.ok) {
-                        this.newMessage = message; // Restore message on error
-                        console.error('Error sending message');
-                    }
-                } catch (error) {
-                    console.error('Error sending message:', error);
-                    this.newMessage = message; // Restore message on error
-                } finally {
-                    this.isLoading = false;
-                }
-            },
-
-            scrollToBottom() {
-                const chatMessages = document.getElementById('chatMessages');
-                if (chatMessages) {
-                    setTimeout(() => {
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
-                    }, 100);
-                }
-            },
-
-            displayMessages() {
-                const chatContainer = document.getElementById('chatMessages');
-                if (!chatContainer) return;
-
-                const currentUser = {{ Auth::check() ? Auth::id() : 0 }};
-
-                chatContainer.innerHTML = this.messages.map(msg => `
-                    <div class="mb-4 flex ${msg.sender_id == currentUser ? 'justify-end' : 'justify-start'}">
-                        <div class="${msg.sender_id == currentUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'} rounded-lg px-4 py-2 max-w-xs">
-                            <p>${msg.message}</p>
-                            <p class="text-xs mt-1 opacity-70">${new Date(msg.created_at).toLocaleTimeString('id-ID')}</p>
-                        </div>
-                    </div>
-                `).join('');
-
-                this.scrollToBottom();
-            }
-        }
-    }
 </script>
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.15.0/dist/echo.iife.js"></script>
-<script>
-    // Initialize Reverb Echo
-    window.Echo = new Echo({
-        broadcaster: 'reverb',
-        key: '{{ env('REVERB_APP_KEY') }}',
-        wsHost: '{{ env('REVERB_HOST') }}',
-        wsPort: {{ env('REVERB_PORT') }},
-        wssPort: {{ env('REVERB_PORT') }},
-        forceTLS: false,
-        encrypted: false,
-        disableStats: true,
-        enabledTransports: ['ws', 'wss'],
-    });
-</script>
-@endpush
 @endsection
+

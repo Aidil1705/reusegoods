@@ -6,7 +6,7 @@
     <link rel="shortcut icon" href="{{ asset('images/logo/logo.jpeg') }}" type="image/x-icon">
     @vite('resources/css/app.css') <!-- Tailwind -->
 </head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+<body style="background-image: url('{{ asset('images/bg/bg.jpeg') }}'); background-repeat: repeat; background-attachment: fixed;" class="bg-gray-50 min-h-screen flex items-center justify-center">
 
     <div class="w-full max-w-md">
         
